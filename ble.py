@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # PYTHON VERSION: 2.7
 
-#sudo pip install bluepy
 import bluetooth
 import os
 import time
@@ -28,7 +27,21 @@ def scan():
 		pass
 
 def settings():
-	pass
+	try:
+		global lock_cmd, unlock_cmd
+		print(" Por defecto: [{0}]".format(lock_cmd))
+		input = raw_input(" Ingrese comando para bloquear " + ARROW + " ")
+
+		if input != "":
+			lock_cmd = input
+
+		print(" Por defecto: [{0}]".format(unlock_cmd))
+		input = raw_input(" Ingrese comando para desbloquear " + ARROW + " ")
+
+		if input != "":
+			unlock_cmd = input
+	except KeyboardInterrupt:
+		pass
 
 def play():
 	pass
@@ -37,9 +50,9 @@ def menu():
 	while True:
 		os.system('clear')
 		print('''\033[1;31m
-  ╔═════════════════════════════════╗
-  ║ ★ L O C K / U N L O C K  P C  ★ ║
-  ╚═════════════════════════════════╝
+  ╔══════════════════════════════════╗
+  ║ ★ L O C K / U N L O C K   P C  ★ ║
+  ╚══════════════════════════════════╝
  \033[0;37m
  \033[1;37m ❶\033[0;37m  BUSCAR DISPOSITIVO\033[0;37m
  \033[1;37m ❷\033[0;37m  ACTIVAR LOCK/UNLOCK\033[0;37m
