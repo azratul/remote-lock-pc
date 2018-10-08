@@ -44,7 +44,34 @@ def settings():
 		pass
 
 def play():
-	pass
+	check = False
+	state = 1
+	print(" Para volver al menú presionar Ctrl+C... ")
+	try:
+		while True:
+			nearby_devices = bluetooth.discover_devices()
+			for bdaddr in nearby_devices:
+				if bdaddr == target_address:
+					check = True
+					break
+				check = False
+
+			event = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
+
+			if check == True:
+				if state == 0:
+					os.system(unlock_cmd)
+					print(" [{0}] {1} [DESBLOQUEADO]".format(event, ARROW))
+				state = 1
+			else:
+				if state == 1:
+					os.system(lock_cmd)
+					print(" [{0}] {1} [BLOQUEADO]".format(event, ARROW))
+				state = 0
+
+			time.sleep(SLEEP_TIME)
+	except KeyboardInterrupt:
+		pass
 
 def menu():
 	while True:
