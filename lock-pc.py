@@ -8,19 +8,21 @@ import time
 import datetime
 
 target_address = None
-#lock_cmd       = "loginctl lock-session"
-#unlock_cmd     = "loginctl unlock-session"
-lock_cmd       = "gnome-screensaver-command --lock"
-unlock_cmd     = "gnome-screensaver-command -d"
-SLEEP_TIME = 1
-ARROW      = '➔'
+lock_cmd       = ["loginctl lock-session", "gnome-screensaver-command --lock"]
+unlock_cmd     = ["loginctl unlock-session", "gnome-screensaver-command -d"]
+
+CMD           = 0 # POR DEFECTO SE UTILIZA EL PRIMER COMANDO DE LA LISTA("lock_cmd", "unlock_cmd")
+SLEEP_TIME    = 1
+DISCOVER_TIME = 5
+DEBUG_MODE    = False
+ARROW         = '➔'
 
 def scan():
 	try:
 		global target_address
 		target_name = raw_input(" Ingrese nombre de dispositivo " + ARROW + " ")
 
-		for bdaddr in bluetooth.discover_devices(duration=5):
+		for bdaddr in bluetooth.discover_devices(duration = DISCOVER_TIME):
 			if target_name == bluetooth.lookup_name(bdaddr):
 				target_address = bdaddr
 				break
@@ -30,17 +32,17 @@ def scan():
 def settings():
 	try:
 		global lock_cmd, unlock_cmd
-		print(" Por defecto: [{0}]".format(lock_cmd))
+		print(" Por defecto: [{0}]".format(lock_cmd[CMD]))
 		input = raw_input(" Ingrese comando para bloquear " + ARROW + " ")
 
 		if input != "":
-			lock_cmd = input
+			lock_cmd[CMD] = input
 
-		print(" Por defecto: [{0}]".format(unlock_cmd))
+		print(" Por defecto: [{0}]".format(unlock_cmd[CMD]))
 		input = raw_input(" Ingrese comando para desbloquear " + ARROW + " ")
 
 		if input != "":
-			unlock_cmd = input
+			unlock_cmd[CMD] = input
 	except KeyboardInterrupt:
 		pass
 
@@ -48,27 +50,27 @@ def play():
 	check = False
 	state = 1
 	print(" Para volver al menú presionar Ctrl+C... ")
-
 	try:
 		while True:
-			# nearby_devices = bluetooth.discover_devices()
-			for bdaddr in bluetooth.discover_devices(duration=4):
+			for bdaddr in bluetooth.discover_devices(duration = DISCOVER_TIME):
 				if bdaddr == target_address:
 					check = True
 					break
 				check = False
 
 			event = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
-			print(" [{0}] [{1}]".format(event, check))
+
+			if DEBUG_MODE == True:
+				print(" [{0}] [{1}]".format(event, check))
 
 			if check == True:
 				if state == 0:
-					os.system(unlock_cmd)
+					os.system(unlock_cmd[CMD])
 					print(" [{0}] {1} [DESBLOQUEADO]".format(event, ARROW))
 				state = 1
 			else:
 				if state == 1:
-					os.system(lock_cmd)
+					os.system(lock_cmd[CMD])
 					print(" [{0}] {1} [BLOQUEADO]".format(event, ARROW))
 				state = 0
 
