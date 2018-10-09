@@ -12,7 +12,7 @@ lock_cmd       = ["loginctl lock-session", "gnome-screensaver-command --lock"]
 unlock_cmd     = ["loginctl unlock-session", "gnome-screensaver-command -d"]
 total_services = 0
 
-CMD           = 1 # POR DEFECTO SE UTILIZA EL PRIMER COMANDO DE LA LISTA("lock_cmd", "unlock_cmd")
+CMD           = 0 # POR DEFECTO SE UTILIZA EL PRIMER COMANDO DE LA LISTA("lock_cmd", "unlock_cmd")
 SLEEP_TIME    = 1
 DISCOVER_TIME = 4
 DEBUG_MODE    = False
