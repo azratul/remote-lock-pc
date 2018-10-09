@@ -8,9 +8,10 @@ import time
 import datetime
 
 target_address = None
-lock_cmd       = "loginctl lock-session"
-unlock_cmd     = "loginctl unlock-session"
-
+#lock_cmd       = "loginctl lock-session"
+#unlock_cmd     = "loginctl unlock-session"
+lock_cmd       = "gnome-screensaver-command --lock"
+unlock_cmd     = "gnome-screensaver-command -d"
 SLEEP_TIME = 1
 ARROW      = '➔'
 
@@ -18,8 +19,8 @@ def scan():
 	try:
 		global target_address
 		target_name = raw_input(" Ingrese nombre de dispositivo " + ARROW + " ")
-		nearby_devices = bluetooth.discover_devices()
-		for bdaddr in nearby_devices:
+
+		for bdaddr in bluetooth.discover_devices(duration=5):
 			if target_name == bluetooth.lookup_name(bdaddr):
 				target_address = bdaddr
 				break
@@ -47,16 +48,18 @@ def play():
 	check = False
 	state = 1
 	print(" Para volver al menú presionar Ctrl+C... ")
+
 	try:
 		while True:
-			nearby_devices = bluetooth.discover_devices()
-			for bdaddr in nearby_devices:
+			# nearby_devices = bluetooth.discover_devices()
+			for bdaddr in bluetooth.discover_devices(duration=4):
 				if bdaddr == target_address:
 					check = True
 					break
 				check = False
 
 			event = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
+			print(" [{0}] [{1}]".format(event, check))
 
 			if check == True:
 				if state == 0:
