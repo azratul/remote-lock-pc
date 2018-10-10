@@ -53,6 +53,7 @@ def settings():
 
 def play():
 	state = 1
+	file  = open('lock.log', 'w')
 	print(" Para volver al menú presionar Ctrl+C... ")
 	try:
 		while True:
@@ -68,20 +69,29 @@ def play():
 			if DEBUG_MODE == True:
 				print(" [{0}] [{1}] [{2}] [{3}]".format(event, check, device, len(services)))
 
+			# I DON'T WANT TO USE A FUNCTION FOR THIS, BECAUSE THE COST IS TOO HIGH(WE'RE IN A LOOP HERE)
 			if check == True:
 				if state == 0:
 					os.system(unlock_cmd[CMD])
-					print(" [{0}] {1} [DESBLOQUEADO]".format(event, ARROW))
+					output = " [" + event + "] " + ARROW + " [DESBLOQUEADO]"
+					print(output)
+					file.write(output + '\n')
+					file.flush()
 				state = 1
 			else:
 				if state == 1:
 					os.system(lock_cmd[CMD])
-					print(" [{0}] {1} [BLOQUEADO]".format(event, ARROW))
+					output = " [" + event + "] " + ARROW + " [BLOQUEADO]"
+					print(output)
+					file.write(output + '\n')
+					file.flush()
 				state = 0
 
 			time.sleep(SLEEP_TIME)
 	except KeyboardInterrupt:
 		pass
+	finally:
+		file.close()
 
 def menu():
 	try:
