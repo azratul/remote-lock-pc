@@ -19,66 +19,18 @@ DISCOVER_TIME = 4
 PRECISION     = 1 # Closest to the 0, the precision increase
 DEBUG_MODE    = False
 ARROW         = '➔'
+LOGFILE       = 'lock.log'
 
 def unattended(target_name):
-	state = 1
-	file  = open('lock.log', 'w')
-	print(" Para salir, presionar Ctrl+C... ")
+	scan(target_name)
+	play()
 
-	try:
-		target_address = None
-		total_services = 0
-
-		for bdaddr in bluetooth.discover_devices(duration = DISCOVER_TIME):
-			if DEBUG_MODE == True:
-				print(" [{0}]".format(bdaddr))
-
-			if target_name == bluetooth.lookup_name(bdaddr):
-				target_address = bdaddr
-				total_services = len(bluetooth.find_service(address = bdaddr))
-				break
-
-		while True:
-			check    = False
-			device   = bluetooth.lookup_name(target_address, timeout = 20)
-			services = bluetooth.find_service(address = target_address)
-
-			if device != None and len(services) >= (total_services - PRECISION):
-				check = True
-
-			event = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
-
-			if DEBUG_MODE == True:
-				print(" [{0}] [{1}] [{2}] [{3}]".format(event, check, device, len(services)))
-
-			# I DON'T WANT TO USE A FUNCTION FOR THIS, BECAUSE THE COST IS TOO HIGH(WE'RE IN A LOOP HERE)
-			if check == True:
-				if state == 0:
-					os.system(unlock_cmd[CMD])
-					output = " [" + event + "] " + ARROW + " [DESBLOQUEADO]"
-					print(output)
-					file.write(output + '\n')
-					file.flush()
-				state = 1
-			else:
-				if state == 1:
-					os.system(lock_cmd[CMD])
-					output = " [" + event + "] " + ARROW + " [BLOQUEADO]"
-					print(output)
-					file.write(output + '\n')
-					file.flush()
-				state = 0
-
-			time.sleep(SLEEP_TIME)
-	except KeyboardInterrupt:
-		pass
-	finally:
-		file.close()
-
-def scan():
+def scan(target_name):
 	try:
 		global target_address, total_services
-		target_name = raw_input(" Ingrese nombre de dispositivo " + ARROW + " ")
+
+		if target_name == None:
+			target_name = raw_input(" Ingrese nombre de dispositivo " + ARROW + " ")
 
 		for bdaddr in bluetooth.discover_devices(duration = DISCOVER_TIME):
 			if DEBUG_MODE == True:
@@ -110,7 +62,7 @@ def settings():
 
 def play():
 	state = 1
-	file  = open('lock.log', 'w')
+	file  = open(LOGFILE, 'w')
 	print(" Para volver al menú presionar Ctrl+C... ")
 	try:
 		while True:
@@ -170,7 +122,7 @@ def menu():
 			opt = raw_input(" Ingrese Opción " + ARROW + " ")
 
 			if opt == "1":
-				scan()
+				scan(None)
 			elif opt == "2":
 				play()
 			elif opt == "3":
