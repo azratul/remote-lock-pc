@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# PYTHON VERSION: 2.7
+# PYTHON VERSION: 3.0
 
 import bluetooth
 import os
@@ -30,7 +30,7 @@ def scan(target_name):
 		global target_address, total_services
 
 		if target_name == None:
-			target_name = raw_input(" Ingrese nombre de dispositivo " + ARROW + " ")
+			target_name = input(" Ingrese nombre de dispositivo " + ARROW + " ")
 
 		for bdaddr in bluetooth.discover_devices(duration = DISCOVER_TIME):
 			if DEBUG_MODE == True:
@@ -47,16 +47,16 @@ def settings():
 	try:
 		global lock_cmd, unlock_cmd
 		print(" Por defecto: [{0}]".format(lock_cmd[CMD]))
-		input = raw_input(" Ingrese comando para bloquear " + ARROW + " ")
+		input_str = input(" Ingrese comando para bloquear " + ARROW + " ")
 
-		if input != "":
-			lock_cmd[CMD] = input
+		if input_str != "":
+			lock_cmd[CMD] = input_str
 
 		print(" Por defecto: [{0}]".format(unlock_cmd[CMD]))
-		input = raw_input(" Ingrese comando para desbloquear " + ARROW + " ")
+		input_str = input(" Ingrese comando para desbloquear " + ARROW + " ")
 
-		if input != "":
-			unlock_cmd[CMD] = input
+		if input_str != "":
+			unlock_cmd[CMD] = input_str
 	except KeyboardInterrupt:
 		pass
 
@@ -119,7 +119,7 @@ def menu():
 			if target_address != None:
 				print(' Dispositivo encontrado: {0}, Servicios: {1}'.format(target_address, total_services))
 
-			opt = raw_input(" Ingrese Opción " + ARROW + " ")
+			opt = input(" Ingrese Opción " + ARROW + " ")
 
 			if opt == "1":
 				scan(None)
